@@ -1,32 +1,23 @@
 import { useNavigate } from "react-router-dom"
-
+import Container from "react-bootstrap/Container"
+import Nav from "react-bootstrap/Nav"
+import Navbar from "react-bootstrap/Navbar"
 const Header = () => {
   const navigate = useNavigate()
   const handleLogin = () => navigate("/login")
   const handleRegister = () => navigate("/register")
 
   return (
-    <div className="flex justify-between m-2 ">
-      <div>Header</div>
-      <div className="flex ">
-        <div className="pr-5">
-          <span
-            onClick={handleLogin}
-            className="cursor-pointer bg-beige py-1 px-3 text-darkBlue rounded-lg"
-          >
-            Login
-          </span>
-        </div>
-        <div className="">
-          <span
-            onClick={handleRegister}
-            className="cursor-pointer bg-lime-500 bg-beige py-1 px-3 text-darkBlue rounded-lg"
-          >
-            Register
-          </span>
-        </div>
-      </div>
-    </div>
+    <Navbar bg="dark" variant="dark">
+      <Container>
+        <Navbar.Brand href="">Navbar</Navbar.Brand>
+        <Nav className="me-auto">
+          <Nav.Link href="/">Home</Nav.Link>
+          <Nav.Link href="/login">Login</Nav.Link>
+          <Nav.Link href="/register">Sign up</Nav.Link>
+        </Nav>
+      </Container>
+    </Navbar>
   )
 }
 

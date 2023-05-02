@@ -1,23 +1,58 @@
-import { Button, Form, InputGroup, Row } from "react-bootstrap"
-import Col from "react-bootstrap/Col"
+import axios from "axios"
+import { useState } from "react"
+import { Button, Form } from "react-bootstrap"
+import { useNavigate } from "react-router-dom"
 const Login = () => {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState<String>()
+  const navigate = useNavigate()
+
+  const onEmail = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setEmail(event.target.value)
+
+  const onPassword = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setPassword(event.target.value)
+
   const handleSubmit = () => {
-    console.log("submit")
+    const loginData = { email, password }
+    axios
+      .post("http://localhost:8080/auth/login", loginData)
+      .then((response) => {
+        console.log(response.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    navigate("/")
   }
 
   return (
-    <Form className="m-5">
+    <Form className="m-5" onSubmit={handleSubmit}>
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="Enter email" />
+        <Form.Control
+          onChange={onEmail}
+          type="email"
+          required
+          placeholder="Enter email"
+        />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Password" />
+        <Form.Control
+          onChange={onPassword}
+          type="password"
+          required
+          placeholder="Password"
+        />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <Form.Check type="checkbox" label="Check me out" />
+        <Form.Check
+          type="checkbox"
+          required
+          label="Accept terms and conditions"
+        />
       </Form.Group>
       <Button variant="primary" type="submit">
         Submit

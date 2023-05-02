@@ -2,9 +2,10 @@ import axios from "axios"
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
-const Login = () => {
+const Login = (props: { setSessionToken: Function }) => {
   const [email, setEmail] = useState("")
-  const [password, setPassword] = useState<String>()
+  const [password, setPassword] = useState("")
+
   const navigate = useNavigate()
 
   const onEmail = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -18,7 +19,8 @@ const Login = () => {
     axios
       .post("http://localhost:8080/auth/login", loginData)
       .then((response) => {
-        console.log(response.data)
+        console.log(response)
+        props.setSessionToken(response.data.authentication.sessionToken)
       })
       .catch((error) => {
         console.log(error)

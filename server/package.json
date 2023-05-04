@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.194",
-    "body-parser": "^1.20.2",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

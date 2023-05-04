@@ -1,9 +1,23 @@
-import React, { useState } from "react"
-import PropTypes from "prop-types"
-import Header from "./Header"
-
-const Home = (props: { sessionToken: String }) => {
-  return <div>{props.sessionToken}</div>
+import { Col, Container, Row } from "react-bootstrap"
+import Card from "./Card"
+const Home = () => {
+  return (
+    <div>
+      <Container>
+        <Row>
+          <Col>
+            <Card />
+          </Col>
+          <Col>
+            <Card />
+          </Col>
+          <Col>
+            <Card />
+          </Col>
+        </Row>
+      </Container>
+    </div>
+  )
 }
 
 export default Home

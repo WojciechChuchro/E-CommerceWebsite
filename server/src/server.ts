@@ -1,7 +1,6 @@
 import http from "http"
 import cors from "cors"
 import express from "express"
-import bodyParser from "body-parser"
 import compression from "compression"
 import cookieParser from "cookie-parser"
 import mongoose from "mongoose"
@@ -17,7 +16,7 @@ app.use(
 
 app.use(cookieParser())
 app.use(compression())
-app.use(bodyParser.json())
+app.use(express.json())
 
 const server = http.createServer(app)
 const PORT = 8080

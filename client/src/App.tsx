@@ -5,21 +5,32 @@ import Login from "./components/Login"
 import Register from "./components/Register"
 import Profil from "./components/Profil"
 import { useState } from "react"
-
+interface userInterface {
+  username: String
+  email: String
+  authentication: {
+    password: String
+    salt: String
+    sessionToken: String
+  }
+}
 function App() {
-  const [sessionToken, setSessionToken] = useState("")
+  const [currentUser, setCurrentUser] = useState<userInterface | undefined>()
   return (
     <>
       <BrowserRouter>
-        <Header sessionToken={sessionToken} setSessionToken={setSessionToken} />
+        <Header currentUser={currentUser} setCurrentUser={setCurrentUser} />
         <Routes>
-          <Route path="/" element={<Home sessionToken={sessionToken} />} />
+          <Route path="/" element={<Home />} />
           <Route
             path="/login"
-            element={<Login setSessionToken={setSessionToken} />}
+            element={<Login setCurrentUser={setCurrentUser} />}
           />
           <Route path="/register" element={<Register />} />
-          <Route path="/profil" element={<Profil />} />
+          <Route
+            path="/profil"
+            element={<Profil currentUser={currentUser} />}
+          />
         </Routes>
       </BrowserRouter>
     </>

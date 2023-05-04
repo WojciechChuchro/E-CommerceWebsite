@@ -2,7 +2,7 @@ import axios from "axios"
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
-const Login = (props: { setSessionToken: Function }) => {
+const Login = ({ setCurrentUser }: { setCurrentUser: Function }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
@@ -20,7 +20,7 @@ const Login = (props: { setSessionToken: Function }) => {
       .post("http://localhost:8080/auth/login", loginData)
       .then((response) => {
         console.log(response)
-        props.setSessionToken(response.data.authentication.sessionToken)
+        setCurrentUser(response.data)
       })
       .catch((error) => {
         console.log(error)

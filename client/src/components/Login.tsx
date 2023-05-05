@@ -2,30 +2,54 @@ import axios from "axios"
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
-const Login = ({ setCurrentUser }: { setCurrentUser: Function }) => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+import { useAppDispatch } from "../hooks/redux"
+import { login } from "../redux/features/userSlice"
+import { User } from "../types/sessionTokenInterface"
 
+interface LoginFormData {
+  email: string
+  password: string
+}
+
+const Login = () => {
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: "",
+    password: "",
+  })
+
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  const onEmail = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setEmail(event.target.value)
+  const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setFormData({ ...formData, email: event.target.value })
 
-  const onPassword = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setPassword(event.target.value)
+  const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setFormData({ ...formData, password: event.target.value })
 
-  const handleSubmit = () => {
-    const loginData = { email, password }
-    axios
-      .post("http://localhost:8080/auth/login", loginData)
-      .then((response) => {
-        console.log(response)
-        setCurrentUser(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-    navigate("/")
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    try {
+      const response = await axios.post<User>(
+        "http://localhost:8080/auth/login",
+        formData
+      )
+
+      const { username, email, sessionToken } = response.data
+
+      dispatch(
+        login({
+          username,
+          email,
+          sessionToken,
+        })
+      )
+
+      navigate("/")
+    } catch (error) {
+      console.error(error)
+      // Wyświetlenie błędu logowania
+    }
   }
 
   return (
@@ -33,7 +57,8 @@ const Login = ({ setCurrentUser }: { setCurrentUser: Function }) => {
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
         <Form.Control
-          onChange={onEmail}
+          value={formData.email}
+          onChange={onEmailChange}
           type="email"
           required
           placeholder="Enter email"
@@ -43,7 +68,8 @@ const Login = ({ setCurrentUser }: { setCurrentUser: Function }) => {
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Password</Form.Label>
         <Form.Control
-          onChange={onPassword}
+          value={formData.password}
+          onChange={onPasswordChange}
           type="password"
           required
           placeholder="Password"

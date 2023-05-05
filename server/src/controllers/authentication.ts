@@ -1,16 +1,20 @@
 import express from "express"
-import { getUserByEmail, createUser } from "../models/users.model"
+import {
+  getUserByEmail,
+  createUser,
+  getUserBySessionToken,
+} from "../models/users.model"
 import { random, authentication } from "../helpers/index"
 
 export const login = async (req: express.Request, res: express.Response) => {
   try {
-    const { email, password } = req.body
+    const { email: reqEmail, password } = req.body
 
-    if (!email || !password) {
+    if (!reqEmail || !password) {
       return res.sendStatus(400)
     }
 
-    const user = await getUserByEmail(email).select(
+    const user = await getUserByEmail(reqEmail).select(
       "+authentication.salt +authentication.password"
     )
 
@@ -20,7 +24,7 @@ export const login = async (req: express.Request, res: express.Response) => {
 
     const expectedHash = authentication(user.authentication.salt, password)
 
-    if (user.authentication.password != expectedHash) {
+    if (user.authentication.password !== expectedHash) {
       return res.sendStatus(403)
     }
 
@@ -34,7 +38,15 @@ export const login = async (req: express.Request, res: express.Response) => {
       path: "/",
     })
 
-    return res.status(200).json(user).end()
+    const {
+      username,
+      email,
+      authentication: { sessionToken },
+    } = user
+
+    const userObject = { username, email: reqEmail, sessionToken }
+
+    return res.status(200).json(userObject).end()
   } catch (error) {
     console.log(error)
     return res.sendStatus(400)
@@ -73,23 +85,15 @@ export const register = async (req: express.Request, res: express.Response) => {
 }
 export const logout = async (req: express.Request, res: express.Response) => {
   try {
-    const { email, password } = req.body
+    const { sessionToken } = req.body
 
-    if (!email || !password) {
-      return res.sendStatus(400)
-    }
-
-    const user = await getUserByEmail(email).select(
-      "+authentication.sessionToken"
-    )
-    console.log(user)
+    const user = await getUserBySessionToken(sessionToken)
 
     if (!user) {
       return res.sendStatus(400)
     }
 
-    const salt = random()
-    user.authentication.sessionToken = authentication(salt, user._id.toString())
+    user.authentication.sessionToken = ""
 
     await user.save()
 

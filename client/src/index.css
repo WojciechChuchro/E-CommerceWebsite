@@ -1,0 +1,10 @@
+.header-link {
+  text-decoration: none;
+  color: grey;
+  padding: 0 0.8rem;
+}
+
+.header-link:hover {
+  transition: all 0.3s ease-in;
+  color: white;
+}

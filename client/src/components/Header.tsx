@@ -28,13 +28,13 @@ const Header = () => {
             </Link>
           </Nav>
           {sessionToken ? (
-            <Nav>
+            <Nav className="header-nav">
               <Link className="header-link" to="/profil">
                 Profil
               </Link>
-              <Nav.Link className="header-link" onClick={handleLogout}>
+              <span className="header-link" onClick={handleLogout}>
                 Logout
-              </Nav.Link>
+              </span>
             </Nav>
           ) : (
             <Nav>

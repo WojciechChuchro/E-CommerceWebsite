@@ -2,9 +2,16 @@
   text-decoration: none;
   color: grey;
   padding: 0 0.8rem;
+  cursor: pointer;
 }
 
 .header-link:hover {
   transition: all 0.3s ease-in;
   color: white;
+}
+
+.header-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

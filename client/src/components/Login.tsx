@@ -3,20 +3,19 @@ import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
 import { useAppDispatch } from "../hooks/redux"
-import { login } from "../redux/features/userSlice"
-import { User } from "../types/sessionTokenInterface"
-
-interface LoginFormData {
-  email: string
-  password: string
-}
+import { login, loginUser } from "../redux/features/userSlice"
+import { User } from "../types/user"
+import { LoginFormData } from "../types/form"
 
 const Login = () => {
+  const [addRequestStatus, setRequestStatus] = useState("idle")
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   })
-
+  const loading =
+    [formData.email, formData.password].every(Boolean) &&
+    addRequestStatus === "idle"
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
@@ -28,27 +27,14 @@ const Login = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
     try {
-      const response = await axios.post<User>(
-        "http://localhost:8080/auth/login",
-        formData
-      )
-
-      const { username, email, sessionToken } = response.data
-
-      dispatch(
-        login({
-          username,
-          email,
-          sessionToken,
-        })
-      )
-
+      setRequestStatus("pending")
+      dispatch(loginUser(formData))
       navigate("/")
     } catch (error) {
-      console.error(error)
-      // Wyświetlenie błędu logowania
+      console.error("Failed to log in", error)
+    } finally {
+      setRequestStatus("idle")
     }
   }
 

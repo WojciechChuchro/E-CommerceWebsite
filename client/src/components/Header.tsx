@@ -4,13 +4,15 @@ import Navbar from "react-bootstrap/Navbar"
 
 import { useAppDispatch, useAppSelector } from "../hooks/redux"
 import { logout } from "../redux/features/userSlice"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 const Header = () => {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { sessionToken } = useAppSelector((state) => state.user)
 
   const handleLogout = () => {
     dispatch(logout())
+    navigate("/")
   }
 
   return (
@@ -23,8 +25,8 @@ const Header = () => {
             <Link className="header-link" to="/">
               Home
             </Link>
-            <Link className="header-link" to="#pricing">
-              Pricing
+            <Link className="header-link" to="/about">
+              About
             </Link>
           </Nav>
           {sessionToken ? (

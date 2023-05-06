@@ -15,3 +15,7 @@
   justify-content: center;
   align-items: center;
 }
+
+.profile-form-control {
+  box-shadow: none !important;
+}

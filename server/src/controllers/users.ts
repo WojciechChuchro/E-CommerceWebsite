@@ -1,5 +1,11 @@
 import express from "express"
-import { getUsers, deleteUserById, getUserById } from "../models/users.model"
+import {
+  getUsers,
+  deleteUserById,
+  getUserById,
+  getUserBySessionToken,
+} from "../models/users.model"
+import { authentication } from "../helpers"
 
 export const getAllUsers = async (
   req: express.Request,
@@ -34,19 +40,31 @@ export const updateUser = async (
   res: express.Response
 ) => {
   try {
-    const { id } = req.params
-    const { username } = req.body
-
-    if (!username) {
+    const { password, sessionToken, username, email } = req.body
+    const user = await getUserBySessionToken(sessionToken).select(
+      "+authentication.salt +authentication.password"
+    )
+    if (!user) {
       return res.sendStatus(400)
     }
 
-    const user = await getUserById(id)
+    const expectedHash = authentication(user.authentication.salt, password)
 
-    user.username = username
+    if (user.authentication.password !== expectedHash) {
+      return res.sendStatus(403)
+    }
+
+    if (username) user.username = username
+
+    if (email) user.email = email
+
     await user.save()
 
-    return res.status(200).json(user).end()
+    const { username: updatedUsername, email: updatedEmail } = user
+
+    const userObject = { username: updatedUsername, email: updatedEmail }
+
+    return res.status(200).json(userObject).end()
   } catch (error) {
     console.log(error)
     return res.sendStatus(400)

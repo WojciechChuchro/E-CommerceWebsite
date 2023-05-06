@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { User } from "../../types/user"
 import axios, { isAxiosError } from "axios"
-import { LoginFormData } from "../../types/form"
+import { LoginFormData, ProfileFormData } from "../../types/form"
 
 const BASE_URL = "http://localhost:8080/"
 
@@ -64,7 +64,21 @@ export const loginUser = createAsyncThunk<
     throw error
   }
 })
-
+export const updateUser = createAsyncThunk<
+  User,
+  ProfileFormData,
+  { rejectValue: any }
+>("auth/login", async (credentials, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(BASE_URL + "auth/login", credentials)
+    return response.data
+  } catch (error) {
+    if (isAxiosError(error)) {
+      return rejectWithValue(error.response?.data)
+    }
+    throw error
+  }
+})
 export const { login, logout } = userSlice.actions
 
 export default userSlice.reducer

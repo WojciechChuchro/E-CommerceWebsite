@@ -31,7 +31,7 @@ const Header = () => {
           </Nav>
           {sessionToken ? (
             <Nav className="header-nav">
-              <Link className="header-link" to="/profil">
+              <Link className="header-link" to="/profile">
                 Profil
               </Link>
               <span className="header-link" onClick={handleLogout}>

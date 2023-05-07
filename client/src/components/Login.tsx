@@ -1,10 +1,8 @@
-import axios from "axios"
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
 import { useAppDispatch } from "../hooks/redux"
-import { login, loginUser } from "../redux/features/userSlice"
-import { User } from "../types/user"
+import { loginUser } from "../redux/features/userSlice"
 import { LoginFormData } from "../types/form"
 
 const Login = () => {

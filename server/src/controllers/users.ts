@@ -44,6 +44,7 @@ export const updateUser = async (
     const user = await getUserBySessionToken(sessionToken).select(
       "+authentication.salt +authentication.password"
     )
+    console.log("sdf")
     if (!user) {
       return res.sendStatus(400)
     }
@@ -51,6 +52,7 @@ export const updateUser = async (
     const expectedHash = authentication(user.authentication.salt, password)
 
     if (user.authentication.password !== expectedHash) {
+      console.log("sdf")
       return res.sendStatus(403)
     }
 

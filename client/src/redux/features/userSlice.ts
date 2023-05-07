@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { User } from "../../types/user"
 import axios, { isAxiosError } from "axios"
 import { LoginFormData, ProfileFormData } from "../../types/form"
@@ -12,16 +12,42 @@ const initialState: User = {
   status: "idle",
   error: null,
 }
+export const loginUser = createAsyncThunk<
+  User,
+  LoginFormData,
+  { rejectValue: any }
+>("auth/login", async (credentials, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(BASE_URL + "auth/login", credentials)
+    return response.data
+  } catch (error) {
+    if (isAxiosError(error)) {
+      return rejectWithValue(error.response?.data)
+    }
+    throw error
+  }
+})
+
+export const updateUser = createAsyncThunk<
+  User,
+  ProfileFormData,
+  { rejectValue: any }
+>("users/update", async (credentials, { rejectWithValue }) => {
+  try {
+    const response = await axios.patch(BASE_URL + "users/update", credentials)
+    return response.data
+  } catch (error) {
+    if (isAxiosError(error)) {
+      return rejectWithValue(error.response?.data)
+    }
+    throw error
+  }
+})
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<User>) => {
-      state.username = action.payload.username
-      state.email = action.payload.email
-      state.sessionToken = action.payload.sessionToken
-    },
     logout: (state) => {
       state.username = null
       state.email = null
@@ -46,39 +72,22 @@ const userSlice = createSlice({
         state.status = "failed"
         state.error = action.error.message
       })
+      .addCase(updateUser.pending, (state) => {
+        state.status = "loading"
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.status = "succeeded"
+        state.username = action.payload.username
+        state.email = action.payload.email
+        console.log(action.payload)
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.status = "failed"
+        state.error = action.error.message
+      })
   },
 })
 
-export const loginUser = createAsyncThunk<
-  User,
-  LoginFormData,
-  { rejectValue: any }
->("auth/login", async (credentials, { rejectWithValue }) => {
-  try {
-    const response = await axios.post(BASE_URL + "auth/login", credentials)
-    return response.data
-  } catch (error) {
-    if (isAxiosError(error)) {
-      return rejectWithValue(error.response?.data)
-    }
-    throw error
-  }
-})
-export const updateUser = createAsyncThunk<
-  User,
-  ProfileFormData,
-  { rejectValue: any }
->("auth/login", async (credentials, { rejectWithValue }) => {
-  try {
-    const response = await axios.post(BASE_URL + "auth/login", credentials)
-    return response.data
-  } catch (error) {
-    if (isAxiosError(error)) {
-      return rejectWithValue(error.response?.data)
-    }
-    throw error
-  }
-})
-export const { login, logout } = userSlice.actions
+export const { logout } = userSlice.actions
 
 export default userSlice.reducer

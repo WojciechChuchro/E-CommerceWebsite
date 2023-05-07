@@ -4,7 +4,8 @@ export interface LoginFormData {
 }
 
 export interface ProfileFormData {
-  username: string
-  email: string
-  password: string
+  username: string | null
+  email: string | null
+  password: string | null
+  sessionToken: string | null
 }

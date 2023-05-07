@@ -3,8 +3,6 @@ import { User } from "../../types/user"
 import axios, { isAxiosError } from "axios"
 import { LoginFormData, ProfileFormData } from "../../types/form"
 
-const BASE_URL = "http://localhost:8080/"
-
 const initialState: User = {
   username: null,
   email: null,
@@ -12,6 +10,7 @@ const initialState: User = {
   status: "idle",
   error: null,
 }
+const BASE_URL = "http://localhost:8080/"
 export const loginUser = createAsyncThunk<
   User,
   LoginFormData,
@@ -66,7 +65,6 @@ const userSlice = createSlice({
         state.username = action.payload.username
         state.email = action.payload.email
         state.sessionToken = action.payload.sessionToken
-        console.log(action.payload)
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed"

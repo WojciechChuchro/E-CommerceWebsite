@@ -1,4 +1,4 @@
-import { Container, InputGroup, Form, Button } from "react-bootstrap"
+import { Container, InputGroup, Form, Button, Spinner } from "react-bootstrap"
 import { useAppDispatch, useAppSelector } from "../hooks/redux"
 import { useState } from "react"
 import { ProfileFormData } from "../types/form"
@@ -7,8 +7,7 @@ import { updateUser } from "../redux/features/userSlice"
 
 const Profil = () => {
   const user = useAppSelector((state) => state.user)
-  const [addRequestStatus, setRequestStatus] = useState("idle")
-  const { email, username, sessionToken } = user
+  const { email, username, sessionToken, status } = user
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [formData, setFormData] = useState<ProfileFormData>({
@@ -30,13 +29,11 @@ const Profil = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     try {
-      setRequestStatus("pending")
       dispatch(updateUser(formData))
       navigate("/")
     } catch (error) {
       console.error("Failed to log in", error)
     } finally {
-      setRequestStatus("idle")
     }
     navigate("/profile")
   }
@@ -78,7 +75,20 @@ const Profil = () => {
               aria-describedby="passowrd"
             />
           </InputGroup>
-          <Button type="submit">Save</Button>
+          {status === "loading" ? (
+            <Button variant="primary" disabled>
+              <Spinner
+                as="span"
+                animation="grow"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              Loading...
+            </Button>
+          ) : (
+            <Button type="submit">Save</Button>
+          )}
         </Form>
       ) : (
         "Log in first! "

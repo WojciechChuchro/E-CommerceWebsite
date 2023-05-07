@@ -1,19 +1,18 @@
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
-import { useAppDispatch } from "../hooks/redux"
+import { useAppDispatch, useAppSelector } from "../hooks/redux"
 import { loginUser } from "../redux/features/userSlice"
 import { LoginFormData } from "../types/form"
+import Spinner from "react-bootstrap/Spinner"
 
 const Login = () => {
-  const [addRequestStatus, setRequestStatus] = useState("idle")
+  const user = useAppSelector((state) => state.user)
+  const { status } = user
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   })
-  const loading =
-    [formData.email, formData.password].every(Boolean) &&
-    addRequestStatus === "idle"
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
@@ -26,15 +25,12 @@ const Login = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     try {
-      setRequestStatus("pending")
       dispatch(loginUser(formData))
-      navigate("/")
     } catch (error) {
       console.error("Failed to log in", error)
-    } finally {
-      setRequestStatus("idle")
     }
   }
+  if (status === "succeeded") navigate("/")
 
   return (
     <Form className="m-5" onSubmit={handleSubmit}>
@@ -66,9 +62,22 @@ const Login = () => {
           label="Accept terms and conditions"
         />
       </Form.Group>
-      <Button variant="primary" type="submit">
-        Submit
-      </Button>
+      {status === "loading" ? (
+        <Button variant="primary" disabled>
+          <Spinner
+            as="span"
+            animation="grow"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+          Loading...
+        </Button>
+      ) : (
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      )}
     </Form>
   )
 }

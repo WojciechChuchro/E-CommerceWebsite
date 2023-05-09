@@ -1,10 +1,10 @@
 import { Index } from "./index"
 
 export interface Item {
-  name: String | null
-  count: Number | null
-  price: Number | null
-  image: String | null
+  name: string
+  count: string
+  price: string
+  image: string
 }
 
 export interface Items extends Index {

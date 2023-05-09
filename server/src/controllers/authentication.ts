@@ -1,4 +1,5 @@
 import express from "express"
+import { check, validationResult } from "express-validator"
 import {
   getUserByEmail,
   createUser,
@@ -8,10 +9,17 @@ import { random, authentication } from "../helpers/index"
 
 export const login = async (req: express.Request, res: express.Response) => {
   try {
+    const errors = validationResult(req)
     const { email: reqEmail, password } = req.body
 
     if (!reqEmail || !password) {
-      return res.sendStatus(400)
+      return res.sendStatus(400).json({
+        errors: [
+          {
+            msg: "Invalid Credentials",
+          },
+        ],
+      })
     }
 
     const user = await getUserByEmail(reqEmail).select(
@@ -19,7 +27,13 @@ export const login = async (req: express.Request, res: express.Response) => {
     )
 
     if (!user) {
-      return res.sendStatus(400)
+      return res.sendStatus(400).json({
+        errors: [
+          {
+            msg: "Invalid Credentials",
+          },
+        ],
+      })
     }
 
     const expectedHash = authentication(user.authentication.salt, password)
@@ -56,15 +70,21 @@ export const login = async (req: express.Request, res: express.Response) => {
 export const register = async (req: express.Request, res: express.Response) => {
   try {
     const { email, password, username } = req.body
-
+    const errors = validationResult(req)
     if (!email || !password || !username) {
-      return res.sendStatus(400)
+      return res.status(400).send("Your inputs cannot be empty.")
+    }
+
+    if (!errors.isEmpty()) {
+      return res.send({
+        errors: errors.array(),
+      })
     }
 
     const existingUser = await getUserByEmail(email)
 
     if (existingUser) {
-      return res.sendStatus(400)
+      return res.status(400).send("User with this email already exists.")
     }
 
     const salt = random()
@@ -75,31 +95,6 @@ export const register = async (req: express.Request, res: express.Response) => {
         salt,
         password: authentication(salt, password),
       },
-    })
-
-    return res.status(200).json(user).end()
-  } catch (error) {
-    console.log(error)
-    return res.sendStatus(400)
-  }
-}
-export const logout = async (req: express.Request, res: express.Response) => {
-  try {
-    const { sessionToken } = req.body
-
-    const user = await getUserBySessionToken(sessionToken)
-
-    if (!user) {
-      return res.sendStatus(400)
-    }
-
-    user.authentication.sessionToken = ""
-
-    await user.save()
-
-    res.cookie("E-COMMERCE-WEBSITE-AUTH", user.authentication.sessionToken, {
-      domain: "localhost",
-      path: "/",
     })
 
     return res.status(200).json(user).end()

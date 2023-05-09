@@ -1,8 +1,11 @@
-import { Col, Container, Row } from "react-bootstrap"
-import Card from "./Card"
+import { CardGroup, Col, Container, Row, Button } from "react-bootstrap"
 import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../hooks/redux"
 import { getItems } from "../redux/features/itemSlice"
+import Loader from "./Loader"
+import { Item } from "../types/item"
+import Card from "./ItemCard"
+import ItemCard from "./ItemCard"
 const Home = () => {
   const dispatch = useAppDispatch()
 
@@ -10,23 +13,26 @@ const Home = () => {
     dispatch(getItems())
   }, [dispatch])
 
-  // const items = useAppSelector((state) => state.items.items)
+  const items = useAppSelector((state) => state.items.items)
+  const loading = useAppSelector((state) => state.items.status)
   return (
-    <div>
-      <Container>
-        <Row>
-          <Col>
-            <Card />
-          </Col>
-          <Col>
-            <Card />
-          </Col>
-          <Col>
-            <Card />
-          </Col>
-        </Row>
-      </Container>
-    </div>
+    <Container className="item-container">
+      {loading === "loading" ? (
+        <Loader />
+      ) : (
+        items.map((item: Item) => {
+          return (
+            <ItemCard
+              key={item.name.toString()}
+              count={item.count}
+              name={item.name}
+              price={item.price}
+              image={item.image}
+            />
+          )
+        })
+      )}
+    </Container>
   )
 }
 

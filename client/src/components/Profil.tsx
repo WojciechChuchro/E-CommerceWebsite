@@ -16,7 +16,6 @@ const Profil = () => {
     password: "",
     sessionToken,
   })
-  console.log(formData)
   const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, username: event.target.value })
 

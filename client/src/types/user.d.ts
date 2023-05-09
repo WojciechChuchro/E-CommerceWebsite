@@ -5,3 +5,16 @@ export interface User extends Index {
   email: string | null
   sessionToken: string | null
 }
+
+export interface RegisterUser {
+  status: string | null
+  errors: [Errors] | []
+}
+
+export interface Errors {
+  type: string
+  value: string
+  msg: string
+  path: string
+  location: string
+}

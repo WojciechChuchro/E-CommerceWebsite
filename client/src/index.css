@@ -19,3 +19,31 @@
 .profile-form-control {
   box-shadow: none !important;
 }
+
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+.item-container {
+  display: flex;
+}
+
+.item-card {
+  width: 18rem;
+  margin: 0.5rem;
+}
+
+.item-button-container {
+  display: flex;
+}
+
+.item-button {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  margin: 0.2rem;
+  width: 2rem;
+  height: 2rem;
+}

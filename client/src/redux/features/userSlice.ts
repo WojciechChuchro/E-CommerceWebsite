@@ -21,7 +21,7 @@ export const loginUser = createAsyncThunk<
     return response.data
   } catch (error) {
     if (isAxiosError(error)) {
-      return rejectWithValue(error.response?.data)
+      return rejectWithValue(error.message)
     }
     throw error
   }
@@ -37,7 +37,7 @@ export const updateUser = createAsyncThunk<
     return response.data
   } catch (error) {
     if (isAxiosError(error)) {
-      return rejectWithValue(error.response?.data)
+      return rejectWithValue(error.message)
     }
     throw error
   }
@@ -77,7 +77,6 @@ const userSlice = createSlice({
         state.status = "succeeded"
         state.username = action.payload.username
         state.email = action.payload.email
-        console.log(action.payload)
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.status = "failed"

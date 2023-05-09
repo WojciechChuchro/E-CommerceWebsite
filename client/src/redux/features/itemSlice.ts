@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
-import { Item, Items } from "./../../types/item.d"
+import { Items } from "./../../types/item.d"
 import axios, { isAxiosError } from "axios"
 
 const initialState: Items = {
@@ -21,7 +21,6 @@ export const itemSlice = createSlice({
       })
       .addCase(getItems.fulfilled, (state, action) => {
         state.status = "succeeded"
-        console.log("asdfsadfa")
         state.items = [...action.payload]
       })
       .addCase(getItems.rejected, (state, action) => {

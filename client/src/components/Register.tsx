@@ -5,8 +5,8 @@ import { RegisterFormData } from "../types/form"
 import { registerUser } from "../redux/features/registrationSlice"
 import { useAppDispatch, useAppSelector } from "../hooks/redux"
 import { Spinner } from "react-bootstrap"
-import { Alert } from "react-bootstrap"
 import AlertDanger from "./AlertDanger"
+
 const Register = () => {
   const dispatch = useAppDispatch()
   const register = useAppSelector((state) => state.registerUser)
@@ -16,13 +16,14 @@ const Register = () => {
     username: "",
     password: "",
   })
+
   const onEmail = (event: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, email: event.target.value })
-
   const onPassword = (event: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, password: event.target.value })
   const onUsername = (event: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, username: event.target.value })
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     try {
@@ -31,6 +32,7 @@ const Register = () => {
       console.error("Failed to register", error)
     }
   }
+
   return (
     <>
       {!errors?.length ? (

@@ -9,34 +9,18 @@ import { random, authentication } from "../helpers/index"
 
 export const login = async (req: express.Request, res: express.Response) => {
   try {
-    const errors = validationResult(req)
     const { email: reqEmail, password } = req.body
-
-    if (!reqEmail || !password) {
-      return res.sendStatus(400).json({
-        errors: [
-          {
-            msg: "Invalid Credentials",
-          },
-        ],
-      })
-    }
-
+    const errors = validationResult(req)
     const user = await getUserByEmail(reqEmail).select(
       "+authentication.salt +authentication.password"
     )
+    const expectedHash = authentication(user.authentication.salt, password)
 
-    if (!user) {
-      return res.sendStatus(400).json({
-        errors: [
-          {
-            msg: "Invalid Credentials",
-          },
-        ],
+    if (!errors.isEmpty()) {
+      return res.send({
+        errors: errors.array(),
       })
     }
-
-    const expectedHash = authentication(user.authentication.salt, password)
 
     if (user.authentication.password !== expectedHash) {
       return res.sendStatus(403)
@@ -71,20 +55,11 @@ export const register = async (req: express.Request, res: express.Response) => {
   try {
     const { email, password, username } = req.body
     const errors = validationResult(req)
-    if (!email || !password || !username) {
-      return res.status(400).send("Your inputs cannot be empty.")
-    }
 
     if (!errors.isEmpty()) {
       return res.send({
         errors: errors.array(),
       })
-    }
-
-    const existingUser = await getUserByEmail(email)
-
-    if (existingUser) {
-      return res.status(400).send("User with this email already exists.")
     }
 
     const salt = random()

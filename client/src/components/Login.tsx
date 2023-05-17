@@ -5,10 +5,11 @@ import { useAppDispatch, useAppSelector } from "../hooks/redux"
 import { loginUser } from "../redux/features/userSlice"
 import { LoginFormData } from "../types/form"
 import Spinner from "react-bootstrap/Spinner"
+import AlertDanger from "./AlertDanger"
 
 const Login = () => {
   const user = useAppSelector((state) => state.user)
-  const { status } = user
+  const { status, errors } = user
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -30,55 +31,110 @@ const Login = () => {
       console.error("Failed to log in", error)
     }
   }
-  if (status === "succeeded") navigate("/")
+
+  // if (status === "succeeded") navigate("/")
 
   return (
-    <Form className="m-5" onSubmit={handleSubmit}>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control
-          value={formData.email}
-          onChange={onEmailChange}
-          type="email"
-          required
-          placeholder="Enter email"
-        />
-      </Form.Group>
+    <>
+      {!errors?.length ? (
+        <Form className="m-5" onSubmit={handleSubmit}>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              value={formData.email}
+              onChange={onEmailChange}
+              type="email"
+              required
+              placeholder="Enter email"
+            />
+          </Form.Group>
 
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
-        <Form.Control
-          value={formData.password}
-          onChange={onPasswordChange}
-          type="password"
-          required
-          placeholder="Password"
-        />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <Form.Check
-          type="checkbox"
-          required
-          label="Accept terms and conditions"
-        />
-      </Form.Group>
-      {status === "loading" ? (
-        <Button variant="primary" disabled>
-          <Spinner
-            as="span"
-            animation="grow"
-            size="sm"
-            role="status"
-            aria-hidden="true"
-          />
-          Loading...
-        </Button>
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              value={formData.password}
+              onChange={onPasswordChange}
+              type="password"
+              required
+              placeholder="Password"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicCheckbox">
+            <Form.Check
+              type="checkbox"
+              required
+              label="Accept terms and conditions"
+            />
+          </Form.Group>
+          {status === "loading" ? (
+            <Button variant="primary" disabled>
+              <Spinner
+                as="span"
+                animation="grow"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              Loading...
+            </Button>
+          ) : (
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>
+          )}
+        </Form>
       ) : (
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
+        <Form className="m-5" onSubmit={handleSubmit}>
+          {errors.map((error) => {
+            return <AlertDanger key={error.msg} message={error.msg} />
+          })}
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              value={formData.email}
+              onChange={onEmailChange}
+              type="email"
+              required
+              placeholder="Enter email"
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              value={formData.password}
+              onChange={onPasswordChange}
+              type="password"
+              required
+              placeholder="Password"
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicCheckbox">
+            <Form.Check
+              type="checkbox"
+              required
+              label="Accept terms and conditions"
+            />
+          </Form.Group>
+          {status === "loading" ? (
+            <Button variant="primary" disabled>
+              <Spinner
+                as="span"
+                animation="grow"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              Loading...
+            </Button>
+          ) : (
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>
+          )}
+        </Form>
       )}
-    </Form>
+    </>
   )
 }
 

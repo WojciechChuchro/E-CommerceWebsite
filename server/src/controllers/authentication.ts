@@ -1,5 +1,10 @@
 import express from "express"
-import { check, validationResult } from "express-validator"
+import {
+  Result,
+  ValidationError,
+  check,
+  validationResult,
+} from "express-validator"
 import {
   getUserByEmail,
   createUser,
@@ -11,19 +16,38 @@ export const login = async (req: express.Request, res: express.Response) => {
   try {
     const { email: reqEmail, password } = req.body
     const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.send({
+        username: null,
+        email: null,
+        sessionToken: null,
+        errors: errors.array(),
+      })
+    }
     const user = await getUserByEmail(reqEmail).select(
       "+authentication.salt +authentication.password"
     )
     const expectedHash = authentication(user.authentication.salt, password)
 
-    if (!errors.isEmpty()) {
-      return res.send({
-        errors: errors.array(),
-      })
-    }
-
     if (user.authentication.password !== expectedHash) {
-      return res.sendStatus(403)
+      const errors: Result<ValidationError> = validationResult(req)
+
+      const newError: ValidationError = {
+        location: "body",
+        value: "password",
+        msg: "Wrong data provided.",
+        type: "field",
+        path: "password",
+      }
+
+      const updatedErrors: ValidationError[] = errors.array().concat(newError)
+
+      return res.send({
+        username: null,
+        email: null,
+        sessionToken: null,
+        errors: updatedErrors,
+      })
     }
 
     const salt = random()
@@ -38,11 +62,15 @@ export const login = async (req: express.Request, res: express.Response) => {
 
     const {
       username,
-      email,
       authentication: { sessionToken },
     } = user
 
-    const userObject = { username, email: reqEmail, sessionToken }
+    const userObject = {
+      username,
+      email: reqEmail,
+      sessionToken,
+      errors: errors.array(),
+    }
 
     return res.status(200).json(userObject).end()
   } catch (error) {

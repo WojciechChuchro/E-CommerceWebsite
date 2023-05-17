@@ -1,6 +1,8 @@
 import { register, login } from "./../controllers/authentication"
 import {
+  checkPassword,
   checkUserExistsByEmail,
+  checkUserExistsByEmailForLogin,
   checkUserExistsByUsername,
 } from "../validators/validation"
 import express from "express"
@@ -36,7 +38,7 @@ export default (router: express.Router) => {
         .withMessage("Your email address cannot be empty.")
         .isEmail()
         .withMessage("Your address email is invalid.")
-        .custom(checkUserExistsByEmail),
+        .custom(checkUserExistsByEmailForLogin),
       check("password")
         .notEmpty()
         .withMessage("Your password address cannot be empty.")

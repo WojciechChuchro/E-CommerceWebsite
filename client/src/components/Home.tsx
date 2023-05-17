@@ -1,11 +1,11 @@
-import { CardGroup, Col, Container, Row, Button } from "react-bootstrap"
+import { Container } from "react-bootstrap"
 import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../hooks/redux"
 import { getItems } from "../redux/features/itemSlice"
 import Loader from "./Loader"
 import { Item } from "../types/item"
-import Card from "./ItemCard"
 import ItemCard from "./ItemCard"
+
 const Home = () => {
   const dispatch = useAppDispatch()
 

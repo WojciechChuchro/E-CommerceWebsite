@@ -4,6 +4,7 @@ export interface User extends Index {
   username: string | null
   email: string | null
   sessionToken: string | null
+  errors: [Errors] | []
 }
 
 export interface RegisterUser {

@@ -8,7 +8,7 @@ const initialState: User = {
   email: null,
   sessionToken: null,
   status: "idle",
-  errors: null,
+  errors: [],
 }
 const BASE_URL = "http://localhost:8080/"
 export const loginUser = createAsyncThunk<
@@ -52,7 +52,7 @@ const userSlice = createSlice({
       state.email = null
       state.sessionToken = null
       state.status = "idle"
-      state.errors = null
+      state.errors = []
     },
   },
   extraReducers(builder) {
@@ -65,10 +65,12 @@ const userSlice = createSlice({
         state.username = action.payload.username
         state.email = action.payload.email
         state.sessionToken = action.payload.sessionToken
+        state.errors = action.payload.errors
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed"
-        state.errors = action.error.message
+        // state.errors = action.error.message
+        state.errors = action.payload.errors
       })
       .addCase(updateUser.pending, (state) => {
         state.status = "loading"
@@ -81,7 +83,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.status = "failed"
-        state.errors = action.error.message
+        // state.errors = action.error.message
       })
   },
 })

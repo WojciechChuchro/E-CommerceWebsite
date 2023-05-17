@@ -40,6 +40,7 @@ const Register = () => {
           <Form.Group className="mb-3" controlId="formBasicUsername">
             <Form.Label>Username</Form.Label>
             <Form.Control
+              value={formData.username}
               onChange={onUsername}
               type="username"
               required
@@ -49,6 +50,7 @@ const Register = () => {
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
+              value={formData.email}
               onChange={onEmail}
               type="email"
               required
@@ -59,6 +61,7 @@ const Register = () => {
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control
+              value={formData.password}
               onChange={onPassword}
               type="password"
               required
@@ -97,6 +100,7 @@ const Register = () => {
           <Form.Group className="mb-3" controlId="formBasicUsername">
             <Form.Label>Username</Form.Label>
             <Form.Control
+              value={formData.username}
               onChange={onUsername}
               type="username"
               required
@@ -106,6 +110,7 @@ const Register = () => {
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
+              value={formData.email}
               onChange={onEmail}
               type="email"
               required
@@ -116,6 +121,7 @@ const Register = () => {
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control
+              value={formData.password}
               onChange={onPassword}
               type="password"
               required
